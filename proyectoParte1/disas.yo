@@ -1,0 +1,56 @@
+                            | # Stage 1: irmov
+0x000:                      | .pos 0
+0x000: 10                   | nop
+                            | 
+                            | # … codigo para etapa 1 …
+                            | 
+0x001: 30f0f300             | irmovw $243, %ax			# R[3]=0x00f3
+0x005: 30f1eeff             | irmovw $-18, %cx			# R[1]=0xffee
+0x009: 30f20f00             | irmovw $15, %dx				# R[2]=0x000f
+0x00d: 2013                 | rrmovw %cx, %bx				# R[3]=R[1]
+                            | 
+                            | # stage 2: aritmetica
+                            | 
+0x00f: 10                   | nop
+                            | 
+                            | # … codigo para etapa 2 …
+                            | 
+0x010: 6023                 | addw %dx, %bx				# R[3]+=R[1]
+0x012: 6120                 | subw %dx, %ax				# R[0]-=R[2]
+0x014: 6221                 | andw %dx, %cx				# R[1]*=R[2]
+0x016: 6302                 | xorw %ax, %dx				# R[2]^=R[0]
+                            | 
+                            | # stage 3: Memoria
+                            | 
+0x018: 10                   | nop
+                            | 
+                            | # … codigo para etapa 3 …
+                            | 
+0x019: 30f10200             | irmovw $2, %cx				# R[1]=0x0002
+0x01d: 30f2f300             | irmovw $243, %dx			# R[2]=0x00f3
+0x021: 40210000             | rmmovw %dx, 0(%cx)			# R[1]+0=R[2]
+0x025: 30f20000             | irmovw $0, %dx				# R[2]=0x0000
+0x029: 50210000             | mrmovw 0(%cx), %dx			# R[2]=R[1]+0
+                            | 
+                            | # stage 4: CC, jumps y lo anterior
+                            | 
+0x02d: 10                   | nop
+                            | 
+                            | # … codigo para etapa 4 …
+                            | 
+0x02e: 6333                 | xorw %bx, %bx				# R[3]^=R[3]
+0x030: 30f10100             | irmovw $1, %cx				# R[1]=0x0001
+0x034: 30f20400             | irmovw $4, %dx				# R[2]=0x0004
+0x038: 704100               | jmp 0x0041				# jmp M[65]
+0x03b: 6013                 | addw %cx, %bx				# R[3]+=R[1]
+0x03d: 40330000             | rmmovw %bx, 0(%bx)			# R[3]+0=R[3]
+0x041: 2030                 | rrmovw %bx, %ax				# R[0]=R[3]
+0x043: 6120                 | subw %dx, %ax				# R[0]-=R[2]
+0x045: 713b00               | jle 0x003b				# jle M[59]
+                            | 
+0x048: 10                   | nop
+                            | 
+                            | 
+                            | 
+0x049: 00                   | halt
+                            | 

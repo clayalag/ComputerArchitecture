@@ -1,0 +1,56 @@
+# Stage 1: irmov
+.pos 0
+nop
+
+# … codigo para etapa 1 …
+
+irmovw $243, %ax			# R[3]=0x00f3
+irmovw $-18, %cx			# R[1]=0xffee
+irmovw $15, %dx				# R[2]=0x000f
+rrmovw %cx, %bx				# R[3]=R[1]
+
+# stage 2: aritmetica
+
+nop
+
+# … codigo para etapa 2 …
+
+addw %dx, %bx				# R[3]+=R[1]
+subw %dx, %ax				# R[0]-=R[2]
+andw %dx, %cx				# R[1]*=R[2]
+xorw %ax, %dx				# R[2]^=R[0]
+
+# stage 3: Memoria
+
+nop
+
+# … codigo para etapa 3 …
+
+irmovw $2, %cx				# R[1]=0x0002
+irmovw $243, %dx			# R[2]=0x00f3
+rmmovw %dx, 0(%cx)			# R[1]+0=R[2]
+irmovw $0, %dx				# R[2]=0x0000
+mrmovw 0(%cx), %dx			# R[2]=R[1]+0
+
+# stage 4: CC, jumps y lo anterior
+
+nop
+
+# … codigo para etapa 4 …
+
+xorw %bx, %bx				# R[3]^=R[3]
+irmovw $1, %cx				# R[1]=0x0001
+irmovw $4, %dx				# R[2]=0x0004
+jmp 0x0041				# jmp M[65]
+addw %cx, %bx				# R[3]+=R[1]
+rmmovw %bx, 0(%bx)			# R[3]+0=R[3]
+rrmovw %bx, %ax				# R[0]=R[3]
+subw %dx, %ax				# R[0]-=R[2]
+jle 0x003b				# jle M[59]
+
+nop
+
+
+
+halt
+
